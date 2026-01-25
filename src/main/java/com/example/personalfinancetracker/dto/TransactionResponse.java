@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class TransactionResponse {
     private int amount;
     private String description;
-    private Category categoryName;
+    private String categoryName;
     private LocalDateTime createdAt;
 }
 

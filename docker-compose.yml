@@ -1,31 +1,20 @@
-version: '3.8'
-
 services:
-  postgres:
-    image: postgres:15-alpine
-    container_name: finance_postgres
+  db:
+    image: postgres:15
     environment:
-      POSTGRES_DB: personalfinance
+      POSTGRES_DB: finance
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123456
+      POSTGRES_PASSWORD: 123
     ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - 5433:5432
 
   app:
     build: .
-    container_name: finance_app
     ports:
-      - "8080:8080"
+      - 8080:8080
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/personalfinance
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/finance
       SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: 123456
-      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_DATASOURCE_PASSWORD: 123
     depends_on:
-      - postgres
-    restart: unless-stopped
-
-volumes:
-  postgres_data:
+      - db

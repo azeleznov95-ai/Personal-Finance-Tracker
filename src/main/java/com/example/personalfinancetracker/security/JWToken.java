@@ -1,77 +1,76 @@
 package com.example.personalfinancetracker.security;
 
 import com.example.personalfinancetracker.exeptions.IdIsInvalid;
-import com.example.personalfinancetracker.exeptions.LoginIsInvalid;
+import com.example.personalfinancetracker.exeptions.IncorrectLoginOrPasswordException;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@ConfigurationProperties(prefix = "app.jwt")
+@ConfigurationProperties(prefix = "app.jwt.secret")
+
 @Component
 @Getter
 @Setter
 public class JWToken {
     private String secret;
+    private Claims parseClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
+    }
     public String generateJWT(String username){
         Map<String,Object> claims=new HashMap<>();
         return createToken(claims,username);
 
     }
     public String createToken(Map<String,Object>claims,String subject){
-        return Jwts.builder().setClaims(claims)
+        return Jwts.builder()
+                .setClaims(claims)
                 .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*60* 10))
-                .signWith(SignatureAlgorithm.HS256,secret)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .signWith(SignatureAlgorithm.HS256, Keys.hmacShaKeyFor(secret.getBytes()))
                 .compact();
     }
     public Long extractUserId(String token) {
-        Claims claims=  Jwts
-                .parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody();
-        Long id=  claims.get("userId",Long.class);
+        Claims claims = parseClaims(token);
+        Object raw = claims.get("userId");
+        System.out.println("userId value = " + raw + ", type = " + (raw == null ? null : raw.getClass()));
+        Long id = claims.get("userId",Long.class);
         if (id!=null){
             return id;
-        };
+        }
         throw new IdIsInvalid("Id is invalid");
     }
     public String extractLogin(String token){
-        Claims claims=  Jwts
-                .parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody();
-        String login=claims.get("login",String.class);
+        Claims claims = parseClaims(token);
+        String login = claims.get("login",String.class);
+
         if (login!=null && !login.isBlank()){
             return login;
         };
-        throw new LoginIsInvalid("Login is invalid");
-    }
-    public Claims extractClaims(String token){
-        return Jwts.parser()
-                .setSigningKey(secret)
-                .parseClaimsJws(token)
-                .getBody();
+        throw new IncorrectLoginOrPasswordException("Login is invalid");
     }
     public boolean isValid(String token){
         try{
-            extractLogin(token);
-            extractUserId(token);
+            parseClaims(token);
+            return true;
         }
         catch (RuntimeException ex){
             return false;
         }
-        return true;
+
     }
 
 }
