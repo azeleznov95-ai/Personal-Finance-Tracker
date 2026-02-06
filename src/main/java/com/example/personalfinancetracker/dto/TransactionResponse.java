@@ -1,6 +1,5 @@
 package com.example.personalfinancetracker.dto;
 
-import com.example.personalfinancetracker.model.Category;
 import lombok.Getter;
 import lombok.Setter;
 

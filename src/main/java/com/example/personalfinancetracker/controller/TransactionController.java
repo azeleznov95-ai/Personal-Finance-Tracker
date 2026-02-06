@@ -2,13 +2,11 @@ package com.example.personalfinancetracker.controller;
 
 import com.example.personalfinancetracker.dto.TransactionRequest;
 import com.example.personalfinancetracker.dto.TransactionResponse;
-import com.example.personalfinancetracker.model.FinanceTransaction;
+import com.example.personalfinancetracker.model.Clothes;
 import com.example.personalfinancetracker.service.TransactionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -21,7 +19,7 @@ public class TransactionController {
     }
     @PostMapping("")
     public ResponseEntity<TransactionResponse> createTransaction(@RequestBody TransactionRequest transactionRequest,@RequestParam String token){
-        FinanceTransaction transactionResponse = transactionService.create(transactionRequest,token);
+        Clothes transactionResponse = transactionService.create(transactionRequest,token);
         TransactionResponse response = new TransactionResponse();
         response.setCreatedAt(transactionResponse.getCreatedAt());
         response.setAmount(transactionResponse.getAmount());
