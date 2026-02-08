@@ -25,6 +25,7 @@ public class User {
         @Column(nullable = true,unique = true)
         private  Long telegramId;
         @Column(nullable = false)
-        private Roles role;
+        private Roles role=Roles.User;
+
 
 }

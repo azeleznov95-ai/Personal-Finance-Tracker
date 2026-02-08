@@ -14,7 +14,7 @@ public class SpringSecurity {
     @Bean
     @Order(1)
     public SecurityFilterChain publicEndpoints(HttpSecurity http) throws Exception{
-        http.securityMatcher("api/auth/**")
+        http.securityMatcher("/api/auth/**")
                 .authorizeHttpRequests(authz ->authz.anyRequest().permitAll())
                 .csrf(csrf->csrf.disable());
         return http.build();
