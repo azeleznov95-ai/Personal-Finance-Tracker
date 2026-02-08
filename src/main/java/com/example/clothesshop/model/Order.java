@@ -9,7 +9,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "Orders")
+@Table(name = "order")
 @Getter
 @Setter
 public class Order {
@@ -28,8 +28,10 @@ public class Order {
     public void setCreatedAt(){
         this.createdAt = LocalDateTime.now();
     }
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     Size size;
+    @Enumerated(EnumType.STRING)
     @Column(nullable = true)
     OrderStatus orderStatus;
 

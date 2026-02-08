@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-@ConfigurationProperties(prefix = "app.jwt.secret")
+@ConfigurationProperties(prefix = "app.jwt")
 
 @Component
 @Getter
@@ -47,7 +47,7 @@ public class JWToken {
         Claims claims = parseClaims(token);
         Object raw = claims.get("userId");
         System.out.println("userId value = " + raw + ", type = " + (raw == null ? null : raw.getClass()));
-        Long id = claims.get("userId",Long.class);
+        Long id = Long.parseLong( claims.get("userId",String.class));
         if (id!=null){
             return id;
         }

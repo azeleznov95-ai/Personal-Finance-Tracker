@@ -14,8 +14,6 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
 
-jwt:
-  secret: AVKC2AIQLFmkdWQ9eOZRH2dt8hTbWVAVKC2AIQLFmkdWQ9eOZRH2dt8hTbWVDAFCuX7x5hWeUDAFCuX7x5hWeU
 
 server:
   port: 8080
