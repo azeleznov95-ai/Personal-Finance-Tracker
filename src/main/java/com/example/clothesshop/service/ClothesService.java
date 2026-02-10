@@ -1,11 +1,19 @@
 package com.example.clothesshop.service;
 
+import com.example.clothesshop.dto.ClothChangeAmountRequestDto;
 import com.example.clothesshop.dto.ClothesAddRequestDto;
 import com.example.clothesshop.dto.ClothesResponseDto;
 import com.example.clothesshop.exeptions.BadClothesRequest;
 import com.example.clothesshop.mapper.ClothesMapper;
+import com.example.clothesshop.model.Clothes;
 import com.example.clothesshop.repository.ClothesRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+
 
 @Service
 public class ClothesService {
@@ -34,5 +42,43 @@ private final ClothesMapper mapper;
         var entity = mapper.toEntity(requestDto);
         var saved = clothesRepository.save(entity);
         return mapper.toResponse(saved);
+    }
+    public ClothesResponseDto getById(Long id){
+        Optional<Clothes> clothOpt= clothesRepository.findClothesById(id);
+    if (clothOpt.isEmpty()){
+        throw new BadClothesRequest("Cloth doesn't exist");
+
+    }
+    Clothes cloth = clothOpt.get();
+        return mapper.toResponse(cloth);
+    }
+    public List<ClothesResponseDto> getList(){
+        List<Clothes>ListClothes =  clothesRepository.findAll();
+        List<ClothesResponseDto> listResponse = new ArrayList<>();
+        for (Clothes cloth: ListClothes){
+            listResponse.add(mapper.toResponse(cloth));
+        }
+        return listResponse;
+    }
+    public ClothesResponseDto changeAmount(ClothChangeAmountRequestDto requestDto){
+        var delta = requestDto.getDelta();
+
+        var clothOpt = clothesRepository.findClothesById(requestDto.getId());
+        if (clothOpt.isEmpty()){
+            throw new BadClothesRequest("Id doesn't match any exising cloth");
+
+        }
+
+        var cloth = clothOpt.get();
+        if (cloth.getRemainingAmount() + delta < 0){
+            throw new BadClothesRequest("Resulting remainingAmount cannot be negative");
+        }
+        if (delta ==0){
+            throw new BadClothesRequest("delta is zero");
+        }
+
+        cloth.setRemainingAmount(cloth.getRemainingAmount()+delta);
+        clothesRepository.save(cloth);
+        return mapper.toResponse(cloth);
     }
 }

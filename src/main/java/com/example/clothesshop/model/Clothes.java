@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
-@Table(name = "clothes")
+@Table
 @Getter
 @Setter
 public class Clothes {
@@ -18,20 +18,20 @@ public class Clothes {
     private Long id;
     @Column(nullable = false)
     String name;
-    @Column(name="price",nullable = false)
+    @Column(nullable = false)
     private Integer price;
-    @Column(name = "description",nullable = true)
+    @Column(nullable = true)
     private String description;
     @ElementCollection(fetch = FetchType.EAGER)
-    @CollectionTable(name = "clothes_sizes", joinColumns = @JoinColumn(name = "clothes_id"))
+    @CollectionTable( joinColumns = @JoinColumn(name = "clothes_id"))
     @Enumerated(EnumType.STRING)
-    @Column(name = "size")
+    @Column()
     Set<Size> setSize;
-    @Column(name = "imageUrl")
+    @Column()
     String imageUrl;
-    @Column(name = "active")
+    @Column()
     boolean active=true;
-    @Column(name="remainingAmount",nullable = false)
+    @Column(nullable = false)
     private Integer remainingAmount=0;
     @Column(nullable = false)
     private LocalDateTime createdAt;

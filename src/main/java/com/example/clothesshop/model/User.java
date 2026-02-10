@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "users")
+@Table
 @Getter
 @Setter
 public class User {
@@ -21,7 +21,7 @@ public class User {
         @Column(nullable = false)
         private String passwordHash;
         @Column(nullable = false,unique = true)
-        private String telegramUsername;
+        private String telegramUsername="0";
         @Column(nullable = true,unique = true)
         private  Long telegramId;
         @Column(nullable = false)
