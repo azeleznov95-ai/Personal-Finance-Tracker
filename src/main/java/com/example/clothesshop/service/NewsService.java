@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
+
 
 
 @Service
@@ -34,7 +34,7 @@ public class NewsService {
             if (requestDto.getImages().isEmpty()){
             throw new BadNewsRequestException("There are no images ");
             }
-        Optional<News> oldNews = newsRepository.getNewsByIsActive(true);
+        List<News> oldNews = newsRepository.getNewsByIsActive(true);
 
         News updatedNews = mapper.toEntity(requestDto);
         newsRepository.save(updatedNews);

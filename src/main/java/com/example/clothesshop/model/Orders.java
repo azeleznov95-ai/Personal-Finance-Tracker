@@ -12,28 +12,28 @@ import java.time.LocalDateTime;
 @Table
 @Getter
 @Setter
-public class Order {
+public class Orders {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
     @JoinColumn
-    User user;
+    private Users user;
     @Column(nullable = false)
-    String orderedCloth;
+    private String orderedCloth;
     @Column(nullable = false)
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
     @PrePersist
     public void setCreatedAt(){
         this.createdAt = LocalDateTime.now();
     }
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    SizeEnum size;
+    private SizeEnum size;
     @Enumerated(EnumType.STRING)
     @Column(nullable = true)
-    OrderStatusEnum orderStatus;
+    private OrderStatusEnum orderStatus;
 
 
 

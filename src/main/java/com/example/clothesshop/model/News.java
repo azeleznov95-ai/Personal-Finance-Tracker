@@ -14,17 +14,17 @@ import java.util.List;
 public class News {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long Id;
+    private Long Id;
     @Column(nullable = false)
-    List<String> images;
+    private List<String> images;
     @Column(nullable = false,unique = true)
-    String name;
+    private String name;
     @Column(nullable = false)
-    String description;
+    private String description;
     @Column(nullable = false)
-    LocalDateTime createdAt;
+    private LocalDateTime createdAt;
     @Column(nullable = false)
-    Boolean isActive= true;
+    private Boolean isActive= true;
     @PrePersist
     public void setCreatedAt(){
         this.createdAt = LocalDateTime.now();

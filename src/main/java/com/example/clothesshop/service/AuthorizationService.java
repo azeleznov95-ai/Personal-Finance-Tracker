@@ -2,7 +2,7 @@ package com.example.clothesshop.service;
 
 import com.example.clothesshop.exeptions.ConflictException;
 import com.example.clothesshop.exeptions.IncorrectLoginOrPasswordException;
-import com.example.clothesshop.model.User;
+import com.example.clothesshop.model.Users;
 import com.example.clothesshop.repository.UserRepository;
 import com.example.clothesshop.security.JWToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,19 +23,19 @@ public class AuthorizationService {
 
     }
     public String register(String login, String password) throws ConflictException, IncorrectLoginOrPasswordException {
-        Optional<User> userRepositoryEntity =userRepository.findUserByLogin(login);
+        Optional<Users> userRepositoryEntity =userRepository.findUserByLogin(login);
         if (userRepositoryEntity.isPresent()){
             throw new ConflictException("Login already exists");
         }
         String passwordHash = encoder.encode(password);
-        User userEntity = new User();
+        Users userEntity = new Users();
         userEntity.setPasswordHash(passwordHash);
         userEntity.setLogin(login);
         userRepository.save(userEntity);
         return login(login,password);
     }
     public String login(String login,String passwordHash) throws IncorrectLoginOrPasswordException {
-        Optional<User> userEntity = userRepository.findUserByLogin(login);
+        Optional<Users> userEntity = userRepository.findUserByLogin(login);
         if (userEntity.isEmpty()){
             throw new IncorrectLoginOrPasswordException("No user with this login");
         }

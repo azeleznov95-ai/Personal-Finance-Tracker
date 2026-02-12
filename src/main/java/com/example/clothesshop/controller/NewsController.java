@@ -3,6 +3,7 @@ package com.example.clothesshop.controller;
 import com.example.clothesshop.dto.NewsRequestDto;
 import com.example.clothesshop.dto.NewsResponseDto;
 import com.example.clothesshop.service.NewsService;
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,13 +21,14 @@ public class NewsController {
         var news = newsService.getNews();
         return ResponseEntity.ok(news);
     }
-
+@Transactional
 @PutMapping
     public ResponseEntity<NewsResponseDto> putNews(@RequestBody NewsRequestDto newsRequestDto){
         var response = newsService.putNews(newsRequestDto);
         return ResponseEntity.ok(response);
 }
-@GetMapping( )
+//todo: админский доступ
+@GetMapping("/latest")
         public ResponseEntity<List<NewsResponseDto>> getNewsList(){
         var response = newsService.getNewsList();
         return ResponseEntity.ok(response);

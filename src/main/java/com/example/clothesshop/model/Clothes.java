@@ -17,7 +17,7 @@ public class Clothes {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
-    String name;
+    private String name;
     @Column(nullable = false)
     private Integer price;
     @Column(nullable = true)
@@ -26,11 +26,11 @@ public class Clothes {
     @CollectionTable( joinColumns = @JoinColumn())
     @Enumerated(EnumType.STRING)
     @Column()
-    Set<SizeEnum> setSize;
+    private Set<SizeEnum> setSize;
     @Column()
-    String imageUrl;
+    private String imageUrl;
     @Column()
-    boolean active=true;
+    private boolean active=true;
     @Column(nullable = false)
     private Integer remainingAmount=0;
     @Column(nullable = false)
