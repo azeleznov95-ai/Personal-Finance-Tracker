@@ -85,4 +85,21 @@
             errorResponse.setMessage(ex.getMessage());
             return ResponseEntity.status(400).body(errorResponse);
         }
+
+        @ExceptionHandler(BadCartRequestException.class)
+        public ResponseEntity<ErrorResponseDto> BadCartRequestHandle(BadCartRequestException ex) {
+            ErrorResponseDto errorResponse = new ErrorResponseDto();
+            errorResponse.setStatus(400);
+            errorResponse.setTimestamp(LocalDateTime.now());
+            errorResponse.setMessage(ex.getMessage());
+            return ResponseEntity.status(400).body(errorResponse);
+        }
+        @ExceptionHandler(CartNotFoundException.class)
+        public ResponseEntity<ErrorResponseDto> CartNotFoundExceptionHandle(CartNotFoundException ex) {
+            ErrorResponseDto errorResponse = new ErrorResponseDto();
+            errorResponse.setStatus(404);
+            errorResponse.setTimestamp(LocalDateTime.now());
+            errorResponse.setMessage(ex.getMessage());
+            return ResponseEntity.status(404).body(errorResponse);
+        }
     }

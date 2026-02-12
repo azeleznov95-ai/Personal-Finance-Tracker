@@ -6,18 +6,11 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CartMapper {
-    public CartResponseDto toResponse(Cart entity){
+    public CartResponseDto toResponse(Cart entity,Integer totalPrice){
         CartResponseDto response =new CartResponseDto();
         var items = entity.getCartItems();
         response.setCartItems(items);
         response.setCartStatus(entity.getCartStatus());
-
-        var totalPrice = 0;
-        if (items!=null){
-            for(var item: items ){
-                totalPrice+= item.getPriceSnapshot()*item.getAmount();
-
-            }}
         response.setTotalPrice(totalPrice);
         response.setUser(entity.getUser());
         return response;
