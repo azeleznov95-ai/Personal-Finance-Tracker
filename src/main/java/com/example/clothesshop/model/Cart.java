@@ -16,7 +16,7 @@ public class Cart {
     @GeneratedValue(strategy =GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn()
     private Users user;
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn()

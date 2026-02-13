@@ -27,8 +27,15 @@ public class CartController {
         return ResponseEntity.ok(cartResponse);
     }
     @PutMapping("/cart/{id}")
-    public ResponseEntity<Void> addToCart(@RequestParam String token, @RequestParam Long id){
-        return ResponseEntity.ok().build();
+    public ResponseEntity<CartResponseDto> addToCart(@RequestParam String token, @RequestParam Long id){
+        var cartResponse = cartService.addToCart(token,id);
+        return ResponseEntity.ok(cartResponse);
     }
+    @DeleteMapping("/cart/{id}")
+    public ResponseEntity<CartResponseDto> removeFromCart(@RequestParam String token,@RequestParam Long id){
+        var cartResponse = cartService.removeFromCart(token,id);
+        return ResponseEntity.ok(cartResponse);
+    }
+
 
 }

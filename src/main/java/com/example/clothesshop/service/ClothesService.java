@@ -71,7 +71,7 @@ private final ClothesMapper mapper;
 
         var cloth = clothOpt.get();
         if (cloth.getRemainingAmount() + delta < 0){
-            throw new BadClothesRequestException("Resulting remainingAmount cannot be negative");
+            throw new BadClothesRequestException("Resulting remainingAmount cannot  negative");
         }
         if (delta ==0){
             throw new BadClothesRequestException("delta is zero");

@@ -16,11 +16,11 @@ public class Clothes {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    @Column(nullable = false,unique = true)
     private String name;
     @Column(nullable = false)
     private Integer price;
-    @Column(nullable = true)
+    @Column()
     private String description;
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable( joinColumns = @JoinColumn())

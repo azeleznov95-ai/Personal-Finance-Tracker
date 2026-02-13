@@ -2,13 +2,21 @@ package com.example.clothesshop.service;
 
 import com.example.clothesshop.dto.CartItemToChangeAmountRequestDto;
 import com.example.clothesshop.dto.CartResponseDto;
+import com.example.clothesshop.enums.CartStatus;
 import com.example.clothesshop.exeptions.BadCartRequestException;
 import com.example.clothesshop.exeptions.CartNotFoundException;
 import com.example.clothesshop.mapper.CartMapper;
+
 import com.example.clothesshop.model.Cart;
+import com.example.clothesshop.model.CartItem;
 import com.example.clothesshop.repository.CartRepository;
+import com.example.clothesshop.repository.ClothesRepository;
+import com.example.clothesshop.repository.UserRepository;
 import com.example.clothesshop.security.JWToken;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 
 
 
@@ -16,11 +24,21 @@ import org.springframework.stereotype.Service;
 public class CartService {
     private final CartRepository cartRepository;
     private final JWToken jwToken;
-    private final CartMapper mapper;
-    CartService(CartRepository cartRepository, JWToken jwToken, CartMapper mapper){
+    private final CartMapper cartMapper;
+    private final ClothesRepository clothesRepository;
+    private final UserRepository userRepository;
+
+    CartService(CartRepository cartRepository,
+                JWToken jwToken,
+                CartMapper cartMapper,
+                ClothesRepository clothesRepository,
+                UserRepository usersRepository
+                ){
         this.cartRepository = cartRepository;
         this.jwToken = jwToken;
-        this.mapper = mapper;
+        this.cartMapper = cartMapper;
+        this.clothesRepository = clothesRepository;
+        this.userRepository = usersRepository;
     }
     private Integer getTotalPrice(Cart cart){
         var totalPrice = 0;
@@ -38,14 +56,16 @@ public class CartService {
         if (cartOpt.isEmpty()){
             var totalPrice = 0;
             Cart cart = new Cart();
+            cart.setUser((userRepository.findUserById(userId)));
+            cart.setCartItems(List.of());
             cartRepository.save(cart);
-            return mapper.toResponse(cart,totalPrice);
+            return cartMapper.toResponse(cart,totalPrice);
         }
         else{
             Cart cart = cartOpt.get();
             var totalPrice = getTotalPrice(cart);
 
-            return mapper.toResponse(cart,totalPrice);
+            return cartMapper.toResponse(cart,totalPrice);
         }
 
     }
@@ -83,8 +103,42 @@ public class CartService {
 
         cartRepository.save(updatedCart);
         var totalPrice = getTotalPrice(updatedCart);
-        return mapper.toResponse(updatedCart,totalPrice);
+        return cartMapper.toResponse(updatedCart,totalPrice);
 
 
     }
-}
+    public CartResponseDto addToCart(String token,Long itemId){
+        var cart = getCart(token);
+        var clothOpt = clothesRepository.findClothesById(itemId);
+        if (clothOpt.isEmpty()){
+            throw new BadCartRequestException("Item with this id not found");
+        }
+        var cloth= clothOpt.get();
+
+        var cartItem = new CartItem();
+        cartItem.setCloth(cloth);
+        cartItem.setAmount(1);
+        cartItem.setAddedAt(LocalDateTime.now());
+        cartItem.setImageUrl(cloth.getImageUrl());
+        cartItem.setPriceSnapshot(cloth.getPrice());
+        cart.setCartStatus(CartStatus.UPDATED);
+        var cartItems =cart.getCartItems();
+        cartItems.add(cartItem);
+        return cart;
+    }
+    public CartResponseDto removeFromCart(String token,Long itemId){
+            var cartOpt = cartRepository.findCartByUser_Id(jwToken.extractUserId(token));
+            if (cartOpt.isEmpty()){
+                throw new CartNotFoundException("Cart is not found");
+            }
+            var cart = cartOpt.get();
+            var cartItems = cart.getCartItems();
+            if (cartItems.isEmpty()){
+                throw  new BadCartRequestException("Nothing to remove");
+            }
+
+            cartItems.removeIf(item -> item.getId().equals(itemId));
+            cart.setCartItems(cartItems);
+            var totalPrice = getTotalPrice(cart);
+            return cartMapper.toResponse(cart,totalPrice);
+}}
